@@ -44,7 +44,7 @@ void loop() {
 //  delay(2000);
   servo_barriere.write(90);
   delay(2000);
-  servo_barriere.write(165);
+  servo_barriere.write(170);
   delay(2000);
   servo_barriere.write(0);
   delay(2000);
