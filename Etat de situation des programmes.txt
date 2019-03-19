@@ -1,0 +1,4 @@
+Comment cela doit fonctionner?
+	La caméra lira en permanance. Lorsqu'elle reconnait une plaque, elle la lit et dit à l'arduino qu'un véhicule est présent. Ce dernier laissera entrer ou non le véhicule tout en activant le clignotement d'une led rouge. A ce moment-là, nous afficherons sur le lcd, la plaque à la première ligne et "accès autorisé" ou "accès non autorisé" sur la ligne du dessous.
+	Au niveau de l'arduino, nous aurons un potentiomètre pour modifier le contraste du lcd et un potentiomètre pour modifier la fréquence de clignotement de la led electroluminescence rouge.
+	Du raspberry à l'arduino, nous devons communiquer le numéro de plaque.
