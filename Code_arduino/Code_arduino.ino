@@ -8,14 +8,13 @@ int pin_interrupt = 2;
 int led_rouge = 6;
 int potentiometre = A0;
 int pot_binaire = 0;
-float frequence = 0;
 float tempo;
 
 const int temps_barriere_entre_2degrees = 40;
 const int temps_barriere_attente = 2000;
 long t_actuel;
 long t_led_rouge = 0;
-int position_barriere = 0;
+int position_barriere = 89;
 bool flag_barriere_montee = false;
 bool flag_barriere_descente = false;
 bool flag_barriere_attente = false;
@@ -40,7 +39,7 @@ void setup() {
   interrupts(); //Activer toutes les interruptions
 
   //DÃ©finir l'Ã©tat initial du servo
-  servo_barriere.write(0);
+  servo_barriere.write(89);
   Serial.begin(9600);
 
   lcd.begin(16,2);
@@ -57,10 +56,10 @@ void barriere(void){
   
   if(!flag_barriere_montee && !flag_barriere_attente && !flag_barriere_descente){
     if (millis() - t_actuel >= temps_barriere_entre_2degrees) {
-      position_barriere ++ ;
+      position_barriere -- ;
       servo_barriere.write(position_barriere);
       t_actuel = millis();
-      if (position_barriere == 90){
+      if (position_barriere == 20){
         flag_barriere_montee = true;
       }
     }
@@ -74,10 +73,10 @@ void barriere(void){
 
   if(flag_barriere_montee && flag_barriere_attente && !flag_barriere_descente){
     if (millis() - t_actuel >= temps_barriere_entre_2degrees) {
-      position_barriere -- ;
+      position_barriere ++ ;
       servo_barriere.write(position_barriere);
       t_actuel = millis();
-      if (position_barriere == 0){
+      if (position_barriere == 89){
         flag_barriere_descente = true;
       }
     }
@@ -108,15 +107,15 @@ void clignotement(float temps_clignotement){
 void loop() {
   digitalWrite(LEDPIN, HIGH);
   pot_binaire = analogRead(potentiometre);
-  frequence=map(pot_binaire,0,1005,1,6);
+  float frequence=map(pot_binaire,0,1005,1,6);
   tempo = (1/frequence) * 1000;
-  clignotement(tempo);
   
   Etat_barriere = digitalRead(pin_interrupt);
   
   if (Etat_barriere == HIGH | flag_maintien_barriere == HIGH){
     flag_maintien_barriere = true;
     barriere();
+    clignotement(tempo);
   }
 }
 
