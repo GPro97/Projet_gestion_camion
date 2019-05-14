@@ -18,11 +18,13 @@ const int temps_barriere_attente = 2000;        //When the gate is open, it wait
 int position_barriere = 89;                     //The value assigned to this variable changes when the gate is moving.
 
 //The following variables are used in the gate movement program.
+long temps_communication;
 long t_actuel;
 bool flag_barriere_montee = false;
 bool flag_barriere_descente = false;
 bool flag_barriere_attente = false;
 bool flag_maintien_barriere = false;
+bool flag_lcd_open = false;
 
 //And these are used in the LED blink program.
 bool etat_led = false;
@@ -54,8 +56,14 @@ void setup() {
 
 void barriere(void){
   
-  lcd.setCursor(0,0);//The cursor position is initialized
-  lcd.write("Bienvenue");//Then we write a word or a sentence on the screen
+  if(!flag_lcd_open){
+    lcd.setCursor(1,0);                           //The cursor position is initialized
+    lcd.write("Bonjour, l'ami");                       //Then we write a word or a sentence on the screen
+    lcd.setCursor(3,1);
+    lcd.write("Bienvenue!");
+    flag_lcd_open = true;                         //If we have just write on the lcd, we set this flag to don't pass here anymore before the next cycle
+  }
+  
   
   if(!flag_barriere_montee && !flag_barriere_attente && !flag_barriere_descente){ //We check if the gate is always horizontal
     if (millis() - t_actuel >= temps_barriere_entre_2degrees) {                   //We check if the elapsed time is equal or higher then the value of the variable name (=40 ms)
@@ -64,6 +72,11 @@ void barriere(void){
       t_actuel = millis();                        //The elapsed time is updated
       if (position_barriere == 20){
         flag_barriere_montee = true;              //When the gate is at the top, the variable name is setting. In this way, we won't go into the loop anymore
+        lcd.clear();
+        lcd.setCursor(3,0);
+        lcd.write("Passez une");
+        lcd.setCursor(1,1);
+        lcd.write("bonne journee");
       }
     }
   }
@@ -90,6 +103,7 @@ void barriere(void){
     flag_barriere_attente = false;
     flag_barriere_descente = false;
     flag_maintien_barriere = false;
+    flag_lcd_open = false;
     lcd.clear();                                  //The lcd screen is cleared
     digitalWrite(led_rouge, LOW);                 //and the red LED is turned off
   }
@@ -116,13 +130,21 @@ void loop() {
   pot_binaire = analogRead(potentiometre);        //The value of the analog potentiometer is recovered.
   float frequence = map(pot_binaire,0,1005,1,6);  //This instruction gives a value include between 1 and 6. It's the frequency of the red LED.
   tempo = (1/frequence) * 1000;                   //The frequency is converted to seconds.
+
+  action_barriere = digitalRead(com_raspberry);   //The value of the input pin is read. This one comes from the raspberry card
   
-  action_barriere = digitalRead(com_raspberry);     //The value of the input pin is read. This one comes from the raspberry card
+  if (action_barriere == 0 && flag_maintien_barriere == LOW){
+    temps_communication = millis();
+  }
+  
+  
 
   //Here, we check two condition. Firstly, if the raspberry detect a number plate. And secondly, if the gate is closed. If only one is HIGH, the condition is confirm.
   if (action_barriere == HIGH | flag_maintien_barriere == HIGH){
+    if (millis() - temps_communication >= 1000){
     flag_maintien_barriere = true;                //This flag authorise to pass if the gate is in movement. It will be reset at the end of the movement.
-    barriere();                                   //This instruction call the part of the program which move the gate.
     clignotement(tempo);                          //And this one makes the red LED blink
+    barriere();                                   //This instruction call the part of the program which move the gate.     
+    }
   }
 }
