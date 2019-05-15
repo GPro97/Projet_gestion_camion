@@ -82,6 +82,9 @@ void barriere(void){
   }
 
   if(flag_barriere_montee && !flag_barriere_attente && !flag_barriere_descente){  //We check if the gate is at the top
+    if(action_barriere == HIGH){
+      t_actuel = millis();
+    }
     if(millis() - t_actuel >= temps_barriere_attente){                            //We check if the elapsed time is equal or higher then the value of the variable name (=2000 ms)
       flag_barriere_attente = true;               //The variable name is setting because we have waiting. In this way, we won't go into the loop anymore
     }
