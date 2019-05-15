@@ -52,7 +52,7 @@ from utils import label_map_util
 from utils import visualization_utils as vis_util
 
 # Name of the directory containing the object detection module we're using
-MODEL_NAME = 'ssdlite_mobilenet_v2_coco_2018_05_09'
+MODEL_NAME = 'licenceplate_inference_graph'
 
 # Grab path to current working directory
 CWD_PATH = os.getcwd()
@@ -62,10 +62,10 @@ CWD_PATH = os.getcwd()
 PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,'frozen_inference_graph.pb')
 
 # Path to label map file
-PATH_TO_LABELS = os.path.join(CWD_PATH,'data','mscoco_label_map.pbtxt')
+PATH_TO_LABELS = os.path.join(CWD_PATH,'data','object-detection.pbtxt')
 
 # Number of classes the object detector can identify
-NUM_CLASSES = 90
+NUM_CLASSES = 1
 
 ## Load the label map.
 # Label maps map indices to category names, so that when the convolution
