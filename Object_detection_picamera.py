@@ -28,6 +28,11 @@ import tensorflow as tf
 import argparse
 import sys
 
+import RPi.GPIO as GPIO  #configuration des pin
+import time 
+
+PIN = 18 #on va utiliser la pin GPIO18
+
 # Set up camera constants
 IM_WIDTH = 640
 IM_HEIGHT = 480
@@ -52,7 +57,7 @@ from utils import label_map_util
 from utils import visualization_utils as vis_util
 
 # Name of the directory containing the object detection module we're using
-MODEL_NAME = 'licenceplate_inference_graph'
+MODEL_NAME = 'numplate' #nom du nouveau modèle
 
 # Grab path to current working directory
 CWD_PATH = os.getcwd()
@@ -62,7 +67,7 @@ CWD_PATH = os.getcwd()
 PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,'frozen_inference_graph.pb')
 
 # Path to label map file
-PATH_TO_LABELS = os.path.join(CWD_PATH,'data','object-detection.pbtxt')
+PATH_TO_LABELS = os.path.join(CWD_PATH,'data','object-detection.pbtxt') 
 
 # Number of classes the object detector can identify
 NUM_CLASSES = 1
@@ -152,6 +157,16 @@ if camera_type == 'picamera':
             use_normalized_coordinates=True,
             line_thickness=8,
             min_score_thresh=0.40)
+
+	nbre_licenceplate= [category_index.get(value) for index,value in enumerate(classes[0]) if scores[0,index] > 0.5]
+        print(len(nbre_licenceplate)) #code trouvé sur internet pour calculer le nombre de palques
+
+	if len(nbre_licenceplate) == 0: 
+            GPIO.output(PIN,GPIO.LOW)
+            print("bas") #pour vérifier l'état du pin18 dans le terminal
+        else:
+            GPIO.output(PIN,GPIO.HIGH)
+            print("haut")
 
         cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
 
