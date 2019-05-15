@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>img23.jpg</filename>
+	<path>/home/pi/Desktop/object-detection/images/img23.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4032</width>
+		<height>1960</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>licenceplate</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1810</xmin>
+			<ymin>970</ymin>
+			<xmax>2010</xmax>
+			<ymax>1012</ymax>
+		</bndbox>
+	</object>
+</annotation>
